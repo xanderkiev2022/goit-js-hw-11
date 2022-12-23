@@ -1,27 +1,27 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import PicApiService from './js/PicApiService';
-// import picTpl from './templates/picTpl';
+import './css/common.css';
 
 // import LoadMoreBtn from './js/components/load-more-btn';
 
-
   const searchForm = document.querySelector('.search-form');
+  const gallery = document.querySelector('.gallery');
+
+  searchForm.addEventListener('submit', onSearch);
+
+  const picApiService = new PicApiService();
 
 // const loadMoreBtn = new LoadMoreBtn({
 //   selector: '[data-action="load-more"]',
 //   hidden: true,
 // });
 
-const picApiService = new PicApiService();
-
-searchForm.addEventListener('input', onSearch);
 // loadMoreBtn.refs.button.addEventListener('click', fetchArticles);
 
 function onSearch(e) {
   e.preventDefault();
 
-  console.log(e.target.value)
-  picApiService.query = e.target.value;
+  picApiService.query = e.target.elements.searchQuery.value;
 
   if (picApiService.query === '') {
     return alert('Введи что-то нормальное');
@@ -29,7 +29,7 @@ function onSearch(e) {
 
   // loadMoreBtn.show();
   picApiService.resetPage();
-  // clearPicContainer();
+  clearPicContainer();
   fetchArticles();
 }
 
@@ -42,7 +42,7 @@ function fetchArticles() {
 }
 
 function appendPicMarkup(hits) {
-  searchForm.insertAdjacentHTML('beforeend', picTpl(hits));
+  gallery.insertAdjacentHTML('afterbegin', picTpl(hits));
 }
 
 function picTpl(hits) {
@@ -50,7 +50,8 @@ function picTpl(hits) {
     (acc, {webformatURL, likes, views, comments, downloads}) =>
       acc +
       `
-      <div class="photo-card">
+      <div class="photo-card container"
+      data-infinite-scroll='{ "path": ".pagination__next", "append": ".post", "history": false }'">
   <img src="${webformatURL}" alt="" loading="lazy" />
   <div class="info">
     <p class="info-item">
@@ -71,7 +72,6 @@ function picTpl(hits) {
   );
 }
 
-
-// function clearPicContainer() {
-//   refs.articlesContainer.innerHTML = '';
-// }
+function clearPicContainer() {
+  gallery.innerHTML = '';
+}
