@@ -8,6 +8,7 @@ import './css/common.css';
   const gallery = document.querySelector('.gallery');
 
   searchForm.addEventListener('submit', onSearch);
+  window.addEventListener('scroll', infinitiScroll);
 
   const picApiService = new PicApiService();
 
@@ -29,19 +30,19 @@ function onSearch(e) {
 
   // loadMoreBtn.show();
   picApiService.resetPage();
-  clearPicContainer();
-  fetchArticles();
+  clearPicsContainer();
+  fetchPics();
 }
 
-function fetchArticles() {
+function fetchPics() {
   // loadMoreBtn.disable();
   picApiService.fetchPictures().then(hits => {
-    appendPicMarkup(hits);
+    appendPicsMarkup(hits);
     // loadMoreBtn.enable();
   });
 }
 
-function appendPicMarkup(hits) {
+function appendPicsMarkup(hits) {
   gallery.insertAdjacentHTML('afterbegin', picTpl(hits));
 }
 
@@ -50,9 +51,9 @@ function picTpl(hits) {
     (acc, {webformatURL, likes, views, comments, downloads}) =>
       acc +
       `
-      <div class="photo-card container"
-      data-infinite-scroll='{ "path": ".pagination__next", "append": ".post", "history": false }'">
-  <img src="${webformatURL}" alt="" loading="lazy" />
+      <div class="photo-card">
+      <div class="wrapper">
+  <img src="${webformatURL}" alt="" loading="lazy" /></div>
   <div class="info">
     <p class="info-item">
       <b>Likes: </b> ${likes}
@@ -72,6 +73,14 @@ function picTpl(hits) {
   );
 }
 
-function clearPicContainer() {
+function clearPicsContainer() {
   gallery.innerHTML = '';
+}
+
+function infinitiScroll (){
+  const documentRect = document.documentElement.getBoundingClientRect();
+  if (documentRect.bottom < document.documentElement.clientHeight +150) {
+    picApiService.incrementPage();
+    fetchPics();
+  }
 }

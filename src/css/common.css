@@ -38,6 +38,13 @@ body {
 
 .photo-card {
   box-shadow: 0px 1px 1px 0px rgb(130, 128, 128);
+  
+}
+
+.wrapper {
+  height: 200px;
+  overflow: hidden;
+
 }
 
 .info {
@@ -54,7 +61,14 @@ margin-top: 10px;
 
 img {
   display: block;
-  height: 200px;
+height: 100%;
   width: 100%;
   object-fit: cover;
+  transform: scale(1);
+    
+  transition: transform 0.5s ease-out;
+}
+
+img:hover {
+transform: scale(1.15);
 }
