@@ -22,11 +22,8 @@ export default class PicApiService {
     const url = `${BASE_URL}/?${searchParams}`;
     // const url = `${BASE_URL}/?key=${API_KEY}&q=${this.searchQuery}&page=${this.page}&per_page=40&image_type=photo&orientation=horizontal&safesearch=true`;
     try {
-      const {
-        data: { hits },
-      } = await axios.get(url);
-      this.incrementPage();
-      return hits;
+      const responce = await axios.get(url);
+      return responce;
     } catch {
       error => console.error(error);
     }
