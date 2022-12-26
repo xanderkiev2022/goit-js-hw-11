@@ -5,7 +5,7 @@ import './css/common.css';
 
 const searchForm = document.querySelector('.search-form');
 const gallery = document.querySelector('.gallery');
-const picApiService = new PicApiServiceClass('', 9, 40);
+const picApiService = new PicApiServiceClass('', 1, 40);
 let loading = false;
 let numberOfPics = 0;
 
