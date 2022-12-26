@@ -4,13 +4,15 @@ const BASE_URL = 'https://pixabay.com/api/';
 const API_KEY = '32292890-abfc4b14e22aeb7e2001180a2';
 
 export default class PicApiService {
-  constructor() {
-    this.searchQuery = '';
-    this.page = 1;
-    this.per_page = 40;
+
+  constructor(searchQuery, page, per_page) {
+    this.searchQuery = searchQuery,
+    this.page = page,
+    this.per_page = per_page
   }
 
   async fetchPictures() {
+
     const searchParams = new URLSearchParams({
       key: API_KEY,
       q: this.searchQuery,
@@ -21,7 +23,7 @@ export default class PicApiService {
       safesearch: true,
     });
     const url = `${BASE_URL}/?${searchParams}`;
-    // const url = `${BASE_URL}/?key=${API_KEY}&q=${this.searchQuery}&page=${this.page}&per_page=40&image_type=photo&orientation=horizontal&safesearch=true`;
+
     try {
       const responce = await axios.get(url);
       return responce;
