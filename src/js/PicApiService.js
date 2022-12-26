@@ -7,6 +7,7 @@ export default class PicApiService {
   constructor() {
     this.searchQuery = '';
     this.page = 1;
+    this.per_page = 40;
   }
 
   async fetchPictures() {
@@ -14,7 +15,7 @@ export default class PicApiService {
       key: API_KEY,
       q: this.searchQuery,
       page: this.page,
-      per_page: 40,
+      per_page: this.per_page,
       image_type: 'photo',
       orientation: 'horizontal',
       safesearch: true,

@@ -6,6 +6,7 @@ import './css/common.css';
 const searchForm = document.querySelector('.search-form');
 const gallery = document.querySelector('.gallery');
 const picApiService = new PicApiService();
+let loading = false;
 
 searchForm.addEventListener('submit', onSearch);
 window.addEventListener('scroll', infinitiScroll);
@@ -23,21 +24,31 @@ function onSearch(e) {
   fetchPics();
 }
 
-function fetchPics() {
-  picApiService
-    .fetchPictures()
-    .then(({ data: { hits, totalHits } }) => {
-      if (totalHits === 0) {
-        Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again');
-      } else if (picApiService.page >= Math.ceil(totalHits / 40)) {
-        // console.log(picApiService.page === Math.ceil(totalHits / picApiService.per_page))
-        Notiflix.Notify.failure("We're sorry, but you've reached the end of search results");
-      } else {
-        appendPicsMarkup(hits);
+async function fetchPics() {
+  loading = true;
+  try {
+    const pictures = await picApiService.fetchPictures();
+    const {data: { hits, totalHits }} = pictures;
+      
+      appendPicsMarkup(hits);
+      if (!totalHits) {
+      // if (totalHits === 0) {
+        Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again');} 
+      else if (hits.length < picApiService.per_page && document.documentElement.getBoundingClientRect().bottom) {
+     // else if (error.response.status === 400) {
+      // document.documentElement.scrollHeight === window.pageYOffset + window.innerHeight
+          // if (picApiService.page >= Math.ceil(totalHits / picApiService.per_page) {  
+        Notiflix.Notify.failure ("We're sorry, but you've reached the end of search results");}  
+      // else {
+      //   Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
+      // }
+  
       }
-    })
-    .catch(error => console.log(error))
-    .finally(() => {searchForm.reset();});
+  catch (error) {console.log(error.message);}
+  finally  {
+    searchForm.reset();
+    loading = false;
+  }
 }
 
 function appendPicsMarkup(hits) {
@@ -49,9 +60,13 @@ function clearPicsContainer() {
 }
 
 function infinitiScroll() {
-  const documentRect = document.documentElement.getBoundingClientRect();
-  if (documentRect.bottom < document.documentElement.clientHeight + 250) {
-    picApiService.incrementPage();
-    fetchPics();
+  if (!loading) {
+    const documentRect = document.documentElement.getBoundingClientRect();
+    console.log(document.documentElement.clientHeight); 
+    if (documentRect.bottom < document.documentElement.clientHeight + 250) {
+      picApiService.incrementPage();
+      console.log('ntest');   
+      fetchPics();
   }
+}
 }
