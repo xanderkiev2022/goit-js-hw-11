@@ -7,7 +7,6 @@ const searchForm = document.querySelector('.search-form');
 const gallery = document.querySelector('.gallery');
 const picApiService = new PicApiServiceClass('', 1, 40);
 let loading = false;
-let numberOfPics = 0;
 
 searchForm.addEventListener('submit', onSearch);
 window.addEventListener('scroll', infinitiScroll);
@@ -32,7 +31,6 @@ async function fetchPics() {
     const {
       data: { hits, totalHits },
     } = pictures;
-    numberOfPics += hits.length;
 
     appendPicsMarkup(hits);
     if (!totalHits) {
