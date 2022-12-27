@@ -42,7 +42,7 @@ async function fetchPics() {
     appendPicsMarkup(hits, totalHits);
 
     lightbox.refresh();
-    smoothScroll();
+    // smoothScroll();
   } 
   catch (error) {console.log(error.message);} 
   finally {
