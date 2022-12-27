@@ -26,10 +26,7 @@ window.addEventListener('scroll', infinitiScroll);
 
 function onSearch(e) {
   e.preventDefault();
-
   picApiService.query = e.target.elements.searchQuery.value;
-
-  if (picApiService.query === '') {Notiflix.Notify.failure('Please, enter something to start searching');}
 
   picApiService.resetPage();
   clearPicsContainer();
@@ -38,18 +35,14 @@ function onSearch(e) {
 
 async function fetchPics() {
   loading = true;
+
   try {
     const pictures = await picApiService.fetchPictures();
     const {data: { hits, totalHits },} = pictures;
-
     appendPicsMarkup(hits, totalHits);
+
     lightbox.refresh();
     smoothScroll();
-
-    if (hits.length < picApiService.per_page) {
-      window.removeEventListener('scroll', infinitiScroll);
-      window.addEventListener('scroll', infinitiScrollEnd);
-    }
   } 
   catch (error) {console.log(error.message);} 
   finally {
@@ -66,10 +59,15 @@ function infinitiScrollEnd(e) {
 }
 
 function appendPicsMarkup(hits, totalHits) {
+  if (picApiService.query === '') {
+    Notiflix.Notify.warning('Please, type the searching parameters');}
   if (!totalHits) {
     Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again');}
-  if (picApiService.page===1 && totalHits>=1){
+  if (picApiService.page===1 && totalHits>=1 && picApiService.query !== ''){
     Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);}
+  if (hits.length < picApiService.per_page) {
+    window.removeEventListener('scroll', infinitiScroll);
+    window.addEventListener('scroll', infinitiScrollEnd);    }
 
   gallery.insertAdjacentHTML('beforeend', createPicsMarkup(hits));}
 
